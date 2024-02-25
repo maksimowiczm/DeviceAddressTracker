@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface INetworkInformationDao {
+internal interface INetworkInformationDao {
 
     @Query("SELECT * FROM networkinformation")
     suspend fun getAllAsync(): List<NetworkInformation>

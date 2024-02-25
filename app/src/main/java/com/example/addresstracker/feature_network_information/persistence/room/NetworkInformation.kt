@@ -6,13 +6,13 @@ import com.example.addresstracker.feature_network_information.domain.model.INetw
 import java.util.Date
 
 @Entity
-data class NetworkInformation(
+internal data class NetworkInformation(
     @PrimaryKey override val id: Int? = null,
     override val address: String,
     override val date: Date,
 ) : INetworkInformation
 
-fun INetworkInformation.toNetworkInformation(): NetworkInformation {
+internal fun INetworkInformation.toNetworkInformation(): NetworkInformation {
     return NetworkInformation(
         this.id,
         this.address,

@@ -3,7 +3,7 @@ package com.example.addresstracker.feature_network_information.persistence.room
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.repository.INetworkInformationRepository
 
-class NetworkInformationRepository(
+internal class NetworkInformationRepository(
     private val dao: INetworkInformationDao,
 ) : INetworkInformationRepository {
 

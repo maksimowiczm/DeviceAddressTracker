@@ -9,7 +9,7 @@ import com.example.addresstracker.feature_network_information.persistence.room.N
 import com.example.addresstracker.utils.PublicAddressUtilities
 import java.util.Calendar
 
-class NetworkInformationOnlyWifiFactory(
+internal class NetworkInformationOnlyWifiFactory(
     private val context: Context,
 ) : INetworkInformationFactory {
     override suspend fun createNetworkInformation(): INetworkInformation? {

@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
     version = 1
 )
 @TypeConverters(DateConverter::class)
-abstract class NetworkInformationDatabase : RoomDatabase() {
+internal abstract class NetworkInformationDatabase : RoomDatabase() {
     abstract val networkInformationDao: INetworkInformationDao
 
     companion object {

@@ -4,4 +4,5 @@ data class NetworkInformationUseCases(
     val addNetworkInformation: AddNetworkInformation,
     val deleteNetworkInformation: DeleteNetworkInformation,
     val getPreviousNetworkInformation: GetPreviousNetworkInformation,
+    val trackNetworkInformation: TrackNetworkInformation,
 )

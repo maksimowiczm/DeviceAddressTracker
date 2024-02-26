@@ -8,6 +8,7 @@ import com.example.addresstracker.feature_network_information.domain.use_case.Ad
 import com.example.addresstracker.feature_network_information.domain.use_case.DeleteNetworkInformation
 import com.example.addresstracker.feature_network_information.domain.use_case.GetPreviousNetworkInformation
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
+import com.example.addresstracker.feature_network_information.domain.use_case.TrackNetworkInformation
 import com.example.addresstracker.feature_network_information.persistence.room.DateConverter
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationDatabase
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationRepository
@@ -50,11 +51,15 @@ internal object NetworkInformationModule {
 
     @Provides
     @Singleton
-    fun provideNetworkInformationUseCases(repository: INetworkInformationRepository): NetworkInformationUseCases {
+    fun provideNetworkInformationUseCases(
+        repository: INetworkInformationRepository,
+        factory: INetworkInformationFactory,
+    ): NetworkInformationUseCases {
         return NetworkInformationUseCases(
             addNetworkInformation = AddNetworkInformation(repository),
             deleteNetworkInformation = DeleteNetworkInformation(repository),
-            getPreviousNetworkInformation = GetPreviousNetworkInformation(repository)
+            getPreviousNetworkInformation = GetPreviousNetworkInformation(repository),
+            trackNetworkInformation = TrackNetworkInformation(factory)
         )
     }
 }

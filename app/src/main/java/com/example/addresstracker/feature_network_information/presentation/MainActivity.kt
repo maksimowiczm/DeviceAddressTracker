@@ -1,50 +1,43 @@
 package com.example.addresstracker.feature_network_information.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
-import com.example.addresstracker.feature_network_information.persistence.room.factory.NetworkInformationOnlyWifiFactory
+import androidx.compose.ui.unit.dp
+import com.example.addresstracker.feature_network_information.presentation.current_network.CurrentNetworkView
+import com.example.addresstracker.feature_network_information.presentation.current_network.CurrentNetworkViewModel
+import com.example.addresstracker.feature_network_information.presentation.previous_networks.PreviousNetworksView
+import com.example.addresstracker.feature_network_information.presentation.previous_networks.PreviousNetworksViewModel
 import com.example.addresstracker.ui.theme.AddressTrackerTheme
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val currentNetworkViewModelVm: CurrentNetworkViewModel by viewModels()
+    private val previousNetworksViewModel: PreviousNetworksViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val factory = NetworkInformationOnlyWifiFactory(applicationContext)
-
-        lifecycleScope.launch {
-            val netInfo = factory.createNetworkInformation()!!
-
-            Log.d("netInfo", netInfo.toString())
-
-            setContent {
-                AddressTrackerTheme {
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        NetworkInformationComposable(netInfo)
+        setContent {
+            AddressTrackerTheme {
+                Column(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth()) {
+                        CurrentNetworkView(viewModel = currentNetworkViewModelVm)
+                    }
+                    Spacer(Modifier.size(16.dp))
+                    Row {
+                        PreviousNetworksView(viewModel = previousNetworksViewModel)
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun NetworkInformationComposable(networkInformation: INetworkInformation) {
-    Text(
-        text = networkInformation.toString(),
-    )
 }

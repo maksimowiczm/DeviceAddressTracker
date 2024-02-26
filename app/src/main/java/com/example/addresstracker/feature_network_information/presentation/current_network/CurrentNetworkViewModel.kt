@@ -23,7 +23,7 @@ class CurrentNetworkViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            currentNetwork = factory.createNetworkInformation()
+            currentNetwork = factory.createCurrentNetworkInformation()
         }
     }
 

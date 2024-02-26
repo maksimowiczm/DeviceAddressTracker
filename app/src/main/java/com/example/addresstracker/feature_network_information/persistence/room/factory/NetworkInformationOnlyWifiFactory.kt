@@ -12,7 +12,7 @@ import java.util.Calendar
 internal class NetworkInformationOnlyWifiFactory(
     private val context: Context,
 ) : INetworkInformationFactory {
-    override suspend fun createNetworkInformation(): INetworkInformation? {
+    override suspend fun createCurrentNetworkInformation(): INetworkInformation? {
         val connectivityManager = context
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

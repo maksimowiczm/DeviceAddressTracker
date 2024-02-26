@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.repository.INetworkInformationRepository
+import com.example.addresstracker.feature_network_information.domain.use_case.AddNetworkInformation
+import com.example.addresstracker.feature_network_information.domain.use_case.DeleteNetworkInformation
+import com.example.addresstracker.feature_network_information.domain.use_case.GetPreviousNetworkInformation
+import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
 import com.example.addresstracker.feature_network_information.persistence.room.DateConverter
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationDatabase
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationRepository
@@ -28,7 +32,7 @@ internal object NetworkInformationModule {
                 NetworkInformationDatabase::class.java,
                 NetworkInformationDatabase.DATABASE_NAME
             )
-            .addTypeConverter(DateConverter())
+            .addTypeConverter(DateConverter()) // doesn't work without it 💀
             .build()
     }
 
@@ -42,5 +46,15 @@ internal object NetworkInformationModule {
     @Singleton
     fun provideNetworkInformationFactory(@ApplicationContext context: Context): INetworkInformationFactory {
         return NetworkInformationOnlyWifiFactory(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkInformationUseCases(repository: INetworkInformationRepository): NetworkInformationUseCases {
+        return NetworkInformationUseCases(
+            addNetworkInformation = AddNetworkInformation(repository),
+            deleteNetworkInformation = DeleteNetworkInformation(repository),
+            getPreviousNetworkInformation = GetPreviousNetworkInformation(repository)
+        )
     }
 }

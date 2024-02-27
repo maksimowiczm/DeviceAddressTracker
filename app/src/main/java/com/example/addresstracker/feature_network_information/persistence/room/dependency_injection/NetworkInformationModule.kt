@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.repository.INetworkInformationRepository
 import com.example.addresstracker.feature_network_information.domain.use_case.AddNetworkInformation
+import com.example.addresstracker.feature_network_information.domain.use_case.AddNetworkInformationIfDifferentToMostRecent
 import com.example.addresstracker.feature_network_information.domain.use_case.DeleteNetworkInformation
 import com.example.addresstracker.feature_network_information.domain.use_case.GetPreviousNetworkInformation
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
@@ -59,7 +60,9 @@ internal object NetworkInformationModule {
             addNetworkInformation = AddNetworkInformation(repository),
             deleteNetworkInformation = DeleteNetworkInformation(repository),
             getPreviousNetworkInformation = GetPreviousNetworkInformation(repository),
-            trackNetworkInformation = TrackNetworkInformation(factory)
+            trackNetworkInformation = TrackNetworkInformation(factory),
+            addNetworkInformationIfDifferentToMostRecent =
+            AddNetworkInformationIfDifferentToMostRecent(repository)
         )
     }
 }

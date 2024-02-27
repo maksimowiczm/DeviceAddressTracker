@@ -16,4 +16,6 @@ internal class NetworkInformationRepository(
 
     override suspend fun deleteAsync(networkInformation: INetworkInformation) =
         dao.deleteAsync(networkInformation.toNetworkInformation())
+
+    override suspend fun getMostRecent(): INetworkInformation? = dao.getMostRecentAsync()
 }

@@ -20,4 +20,7 @@ internal interface INetworkInformationDao {
 
     @Delete
     suspend fun deleteAsync(networkInformation: NetworkInformation)
+
+    @Query("SELECT * FROM NetworkInformation ORDER BY date DESC LIMIT 1")
+    suspend fun getMostRecentAsync(): NetworkInformation?
 }

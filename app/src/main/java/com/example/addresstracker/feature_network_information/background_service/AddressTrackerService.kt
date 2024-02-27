@@ -70,7 +70,7 @@ class AddressTrackerService : Service() {
                     notificationManager.notify(1, updatedNotification.build())
 
                     if (networkInformation != null) {
-                        useCases.addNetworkInformation.invoke(networkInformation)
+                        useCases.addNetworkInformationIfDifferentToMostRecent(networkInformation)
                     }
                 }
                 .launchIn(serviceScope)

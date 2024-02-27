@@ -4,9 +4,12 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.addresstracker.R
+import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,27 +50,17 @@ class AddressTrackerService : Service() {
         serviceScope.cancel()
     }
 
+    private var addressTrackerReceiver: AddressTrackerReceiver? = null
+
     private fun start() {
-        val notification = NotificationCompat
-            .Builder(this, NOTIFICATION_CHANNEL)
-            .setContentTitle("Tracking address...")
-            .setContentText("Address: null")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setOngoing(true)
-
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        // todo use AlarmManager instead?
         serviceScope.launch {
-            val address = factory.createCurrentNetworkInformation().toString()
-
-            useCases.trackNetworkInformation.invoke(Duration.ofMinutes(30))
+            useCases.trackNetworkInformation.invoke(Duration.ofHours(6))
                 .distinctUntilChanged { old, new ->
                     old?.address.equals(new?.address)
                 }
                 .onEach { networkInformation ->
-                    val updatedNotification = notification.setContentText("Address $address")
-                    notificationManager.notify(1, updatedNotification.build())
+                    updateNotification(networkInformation)
 
                     if (networkInformation != null) {
                         useCases.addNetworkInformationIfDifferentToMostRecent(networkInformation)
@@ -76,10 +69,35 @@ class AddressTrackerService : Service() {
                 .launchIn(serviceScope)
         }
 
-        startForeground(1, notification.build())
+        addressTrackerReceiver =
+            AddressTrackerReceiver(factory, useCases, { updateNotification(it) })
+        application.registerReceiver(
+            addressTrackerReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+    private fun updateNotification(networkInformation: INetworkInformation?) {
+        val notificationBuilder = NotificationCompat
+            .Builder(this, NOTIFICATION_CHANNEL)
+            .setContentTitle("Tracking address...")
+            .setContentText("Address: null")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setOngoing(true)
+
+        val updatedNotification =
+            notificationBuilder.setContentText("Address ${networkInformation?.address}")
+
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = notificationBuilder.build()
+
+        notificationManager.notify(1, updatedNotification.build())
+        startForeground(1, notification)
     }
 
     private fun stop() {
+        application.unregisterReceiver(addressTrackerReceiver)
         stopForeground(true)
         stopSelf()
     }

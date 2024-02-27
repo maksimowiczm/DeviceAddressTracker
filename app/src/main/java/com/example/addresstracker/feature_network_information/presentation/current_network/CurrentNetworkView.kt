@@ -18,10 +18,6 @@ import androidx.compose.ui.unit.dp
 fun CurrentNetworkView(
     viewModel: CurrentNetworkViewModel,
 ) {
-    if (viewModel.currentNetwork == null) {
-        return Text(text = "Address not found")
-    }
-
     CurrentNetworkUI(
         currentNetwork = viewModel.currentNetwork.toString(),
         saveCurrentNetwork = { viewModel.saveCurrentNetwork() },
@@ -32,7 +28,7 @@ fun CurrentNetworkView(
 
 @Composable
 fun CurrentNetworkUI(
-    currentNetwork: String,
+    currentNetwork: String?,
     saveCurrentNetwork: () -> Unit,
     startTracking: () -> Unit,
     stopTracking: () -> Unit,
@@ -50,11 +46,15 @@ fun CurrentNetworkUI(
                 .wrapContentHeight(Alignment.CenterVertically),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = currentNetwork,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f)
-            )
+            if (currentNetwork == null) {
+                Text(text = "Address not found")
+            } else {
+                Text(
+                    text = currentNetwork,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
             Button(
                 onClick = { saveCurrentNetwork() },
             ) {

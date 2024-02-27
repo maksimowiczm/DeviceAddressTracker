@@ -1,6 +1,5 @@
 package com.example.addresstracker.feature_network_information.presentation.previous_networks
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,7 @@ fun PreviousNetworksView(viewModel: PreviousNetworksViewModel) {
 
 @Composable
 fun PreviousNetworksUI(networks: List<INetworkInformation>) {
-    LazyColumn(Modifier.fillMaxSize()) {
+    LazyColumn {
         itemsIndexed(networks) { i, network ->
             Text(
                 modifier = Modifier

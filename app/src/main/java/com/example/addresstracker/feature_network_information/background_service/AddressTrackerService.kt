@@ -97,7 +97,9 @@ class AddressTrackerService : Service() {
     }
 
     private fun stop() {
-        application.unregisterReceiver(addressTrackerReceiver)
+        if (addressTrackerReceiver != null) {
+            application.unregisterReceiver(addressTrackerReceiver)
+        }
         stopForeground(true)
         stopSelf()
     }

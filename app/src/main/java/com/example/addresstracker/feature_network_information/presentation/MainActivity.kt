@@ -9,7 +9,10 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.example.addresstracker.feature_network_information.presentation.current_network.CurrentNetworkView
@@ -41,15 +44,20 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AddressTrackerTheme {
-                Column(Modifier.fillMaxWidth()) {
-                    Row(Modifier.fillMaxWidth()) {
-                        CurrentNetworkView(viewModel = currentNetworkViewModelVm)
-                    }
-                    Row(modifier = Modifier.weight(1f)) {
-                        PreviousNetworksView(viewModel = previousNetworksViewModel)
-                    }
-                    Row {
-                        NetworkTrackerView(viewModel = networkTrackerViewModel)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.surface
+                ) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Row(Modifier.fillMaxWidth()) {
+                            CurrentNetworkView(viewModel = currentNetworkViewModelVm)
+                        }
+                        Row(modifier = Modifier.weight(1f)) {
+                            PreviousNetworksView(viewModel = previousNetworksViewModel)
+                        }
+                        Row {
+                            NetworkTrackerView(viewModel = networkTrackerViewModel)
+                        }
                     }
                 }
             }

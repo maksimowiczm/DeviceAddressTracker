@@ -23,7 +23,6 @@
         <activity
             android:name=".feature_network_information.presentation.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.AddressTracker">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,6 +35,8 @@
             android:name=".feature_network_information.background_service.AddressTrackerService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
+
+        <receiver android:name=".feature_network_information.background_service.receiver.NetworkInformationNotificationActionReceiver" />
     </application>
 
 

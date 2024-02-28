@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.IBinder
+import com.example.addresstracker.feature_network_information.background_service.receiver.AddressTrackerNetworkUpdateReceiver
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
@@ -48,7 +49,7 @@ class AddressTrackerService : Service() {
         serviceScope.cancel()
     }
 
-    private var addressTrackerReceiver: AddressTrackerReceiver? = null
+    private var addressTrackerNetworkUpdateReceiver: AddressTrackerNetworkUpdateReceiver? = null
 
     private fun startService() {
         // todo use AlarmManager instead?
@@ -67,10 +68,15 @@ class AddressTrackerService : Service() {
                 .launchIn(serviceScope)
         }
 
-        addressTrackerReceiver =
-            AddressTrackerReceiver(networkInformationFactory, useCases, { updateNotification(it) })
+        addressTrackerNetworkUpdateReceiver =
+            AddressTrackerNetworkUpdateReceiver(
+                networkInformationFactory,
+                useCases,
+                { updateNotification(it) }
+            )
+
         application.registerReceiver(
-            addressTrackerReceiver,
+            addressTrackerNetworkUpdateReceiver,
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         )
     }
@@ -88,8 +94,8 @@ class AddressTrackerService : Service() {
     }
 
     private fun stopService() {
-        if (addressTrackerReceiver != null) {
-            application.unregisterReceiver(addressTrackerReceiver)
+        if (addressTrackerNetworkUpdateReceiver != null) {
+            application.unregisterReceiver(addressTrackerNetworkUpdateReceiver)
         }
         stopForeground(true)
         stopSelf()

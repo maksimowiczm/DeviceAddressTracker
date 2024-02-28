@@ -1,4 +1,4 @@
-package com.example.addresstracker.feature_network_information.background_service
+package com.example.addresstracker.feature_network_information.background_service.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 
 
-class AddressTrackerReceiver(
+class AddressTrackerNetworkUpdateReceiver(
     private val factory: INetworkInformationFactory,
     private val useCases: NetworkInformationUseCases,
     private val notificationUpdater: (INetworkInformation?) -> Unit,

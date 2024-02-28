@@ -54,7 +54,7 @@ class AddressTrackerService : Service() {
     private fun startService() {
         // todo use AlarmManager instead?
         serviceScope.launch {
-            useCases.trackNetworkInformation.invoke(Duration.ofHours(6))
+            useCases.trackNetworkInformation.invoke(Duration.ofHours(3))
                 .distinctUntilChanged { old, new ->
                     old?.address.equals(new?.address)
                 }
@@ -69,11 +69,9 @@ class AddressTrackerService : Service() {
         }
 
         addressTrackerNetworkUpdateReceiver =
-            AddressTrackerNetworkUpdateReceiver(
-                networkInformationFactory,
-                useCases,
-                { updateNotification(it) }
-            )
+            AddressTrackerNetworkUpdateReceiver(networkInformationFactory, useCases) {
+                updateNotification(it)
+            }
 
         application.registerReceiver(
             addressTrackerNetworkUpdateReceiver,

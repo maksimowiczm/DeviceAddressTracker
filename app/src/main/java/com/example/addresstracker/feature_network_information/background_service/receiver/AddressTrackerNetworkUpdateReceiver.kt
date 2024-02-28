@@ -10,28 +10,25 @@ import com.example.addresstracker.feature_network_information.domain.use_case.Ne
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.EmptyCoroutineContext
-
 
 class AddressTrackerNetworkUpdateReceiver(
-    private val factory: INetworkInformationFactory,
+    private val networkInformationFactory: INetworkInformationFactory,
     private val useCases: NetworkInformationUseCases,
-    private val notificationUpdater: (INetworkInformation?) -> Unit,
+    private val onReceive: (INetworkInformation?) -> Unit,
 ) : BroadcastReceiver() {
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action != CONNECTIVITY_ACTION) {
             return
         }
 
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch(EmptyCoroutineContext) {
-            val netInfo = factory.createCurrentNetworkInformation()
+        GlobalScope.launch {
+            val netInfo = networkInformationFactory.createCurrentNetworkInformation()
             if (netInfo != null) {
                 useCases.addNetworkInformationIfDifferentToMostRecent(netInfo)
             }
-
-            notificationUpdater(netInfo)
+            onReceive(netInfo)
         }
     }
 }

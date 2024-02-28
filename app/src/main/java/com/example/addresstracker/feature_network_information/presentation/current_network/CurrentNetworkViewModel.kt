@@ -13,13 +13,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CurrentNetworkViewModel @Inject constructor(
-    factory: INetworkInformationFactory,
+    private val factory: INetworkInformationFactory,
 ) : ViewModel() {
 
     var currentNetwork: INetworkInformation? by mutableStateOf(null)
         private set
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         viewModelScope.launch {
             currentNetwork = factory.createCurrentNetworkInformation()
         }

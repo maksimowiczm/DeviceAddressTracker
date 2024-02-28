@@ -1,6 +1,8 @@
 package com.example.addresstracker.feature_network_information.presentation
 
 import android.Manifest
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import com.example.addresstracker.feature_network_information.background_service.receiver.AddressTrackerNetworkUpdateReceiver
+import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
+import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
 import com.example.addresstracker.feature_network_information.presentation.current_network.CurrentNetworkView
 import com.example.addresstracker.feature_network_information.presentation.current_network.CurrentNetworkViewModel
 import com.example.addresstracker.feature_network_information.presentation.network_tracker.NetworkTrackerView
@@ -23,6 +28,7 @@ import com.example.addresstracker.feature_network_information.presentation.previ
 import com.example.addresstracker.feature_network_information.presentation.previous_networks.PreviousNetworksViewModel
 import com.example.addresstracker.ui.theme.AddressTrackerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -30,9 +36,28 @@ class MainActivity : ComponentActivity() {
     private val previousNetworksViewModel: PreviousNetworksViewModel by viewModels()
     private val networkTrackerViewModel: NetworkTrackerViewModel by viewModels()
 
+    @Inject
+    lateinit var networkInformationFactory: INetworkInformationFactory
+
+    @Inject
+    lateinit var useCases: NetworkInformationUseCases
+
+    private var networkUpdateReceiver: AddressTrackerNetworkUpdateReceiver? = null
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        networkUpdateReceiver =
+            AddressTrackerNetworkUpdateReceiver(networkInformationFactory, useCases) {
+                currentNetworkViewModelVm.refresh()
+                previousNetworksViewModel.refresh()
+            }
+
+        application.registerReceiver(
+            networkUpdateReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
 
         ActivityCompat.requestPermissions(
             this,
@@ -62,5 +87,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        if (networkUpdateReceiver != null) {
+            application.unregisterReceiver(networkUpdateReceiver)
+        }
+        super.onDestroy()
     }
 }

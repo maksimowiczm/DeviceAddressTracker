@@ -21,6 +21,10 @@ class PreviousNetworksViewModel @Inject constructor(
         private set
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         viewModelScope.launch {
             previousNetworks = useCases.getPreviousNetworkInformation()
         }

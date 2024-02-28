@@ -7,8 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
-import com.example.addresstracker.R
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
@@ -30,7 +28,7 @@ class AddressTrackerService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     @Inject
-    lateinit var factory: INetworkInformationFactory
+    lateinit var networkInformationFactory: INetworkInformationFactory
 
     @Inject
     lateinit var useCases: NetworkInformationUseCases
@@ -39,8 +37,8 @@ class AddressTrackerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START -> start()
-            ACTION_STOP -> stop()
+            ACTION_START -> startService()
+            ACTION_STOP -> stopService()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -52,7 +50,7 @@ class AddressTrackerService : Service() {
 
     private var addressTrackerReceiver: AddressTrackerReceiver? = null
 
-    private fun start() {
+    private fun startService() {
         // todo use AlarmManager instead?
         serviceScope.launch {
             useCases.trackNetworkInformation.invoke(Duration.ofHours(6))
@@ -70,33 +68,26 @@ class AddressTrackerService : Service() {
         }
 
         addressTrackerReceiver =
-            AddressTrackerReceiver(factory, useCases, { updateNotification(it) })
+            AddressTrackerReceiver(networkInformationFactory, useCases, { updateNotification(it) })
         application.registerReceiver(
             addressTrackerReceiver,
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         )
     }
 
+    private val notificationFactory = NetworkInformationNotificationFactory(this)
+
     private fun updateNotification(networkInformation: INetworkInformation?) {
-        val notificationBuilder = NotificationCompat
-            .Builder(this, NOTIFICATION_CHANNEL)
-            .setContentTitle("Tracking address...")
-            .setContentText("Address: null")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setOngoing(true)
-
-        val updatedNotification =
-            notificationBuilder.setContentText("Address ${networkInformation?.address}")
-
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notification = notificationBuilder.build()
 
-        notificationManager.notify(1, updatedNotification.build())
+        val notification = notificationFactory.create(networkInformation)
+
+        notificationManager.notify(1, notification)
         startForeground(1, notification)
     }
 
-    private fun stop() {
+    private fun stopService() {
         if (addressTrackerReceiver != null) {
             application.unregisterReceiver(addressTrackerReceiver)
         }

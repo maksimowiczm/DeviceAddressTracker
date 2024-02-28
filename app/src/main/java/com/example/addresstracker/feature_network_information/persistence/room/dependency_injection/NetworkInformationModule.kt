@@ -14,6 +14,7 @@ import com.example.addresstracker.feature_network_information.persistence.room.D
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationDatabase
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationRepository
 import com.example.addresstracker.feature_network_information.persistence.room.factory.NetworkInformationOnlyWifiFactory
+import com.example.addresstracker.utils.DateStringifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,5 +65,11 @@ internal object NetworkInformationModule {
             addNetworkInformationIfDifferentToMostRecent =
             AddNetworkInformationIfDifferentToMostRecent(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkInformationStringifier(@ApplicationContext context: Context): DateStringifier {
+        return DateStringifier(context)
     }
 }

@@ -4,8 +4,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.IBinder
 import com.example.addresstracker.feature_network_information.background_service.receiver.AddressTrackerNetworkUpdateReceiver
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
@@ -72,11 +70,9 @@ class AddressTrackerService : Service() {
             AddressTrackerNetworkUpdateReceiver(networkInformationFactory, useCases) {
                 updateNotification(it)
             }
-
-        application.registerReceiver(
-            addressTrackerNetworkUpdateReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+                .also {
+                    it.registerSelf(applicationContext)
+                }
     }
 
     private val notificationFactory = NetworkInformationNotificationFactory(this)

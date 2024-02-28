@@ -53,11 +53,9 @@ class MainActivity : ComponentActivity() {
                 currentNetworkViewModelVm.refresh()
                 previousNetworksViewModel.refresh()
             }
-
-        application.registerReceiver(
-            networkUpdateReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+                .also {
+                    it.registerSelf(this)
+                }
 
         ActivityCompat.requestPermissions(
             this,
@@ -91,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         if (networkUpdateReceiver != null) {
-            application.unregisterReceiver(networkUpdateReceiver)
+            unregisterReceiver(networkUpdateReceiver)
         }
         super.onDestroy()
     }

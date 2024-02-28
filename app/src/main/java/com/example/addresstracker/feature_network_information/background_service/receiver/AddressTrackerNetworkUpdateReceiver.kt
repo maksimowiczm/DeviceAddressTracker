@@ -3,6 +3,7 @@ package com.example.addresstracker.feature_network_information.background_servic
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager.CONNECTIVITY_ACTION
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
@@ -19,7 +20,7 @@ class AddressTrackerNetworkUpdateReceiver(
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action != CONNECTIVITY_ACTION) {
+        if (INTENTS.all { action -> action != intent?.action }) {
             return
         }
 
@@ -30,5 +31,16 @@ class AddressTrackerNetworkUpdateReceiver(
             }
             onReceive(netInfo)
         }
+    }
+
+    fun registerSelf(context: Context) {
+        for (filter in INTENT_FILTERS) {
+            context.registerReceiver(this, filter)
+        }
+    }
+
+    companion object {
+        private val INTENTS = arrayOf(CONNECTIVITY_ACTION)
+        val INTENT_FILTERS = INTENTS.map { intent -> IntentFilter(intent) }
     }
 }

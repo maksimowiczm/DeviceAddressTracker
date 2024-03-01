@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AddressTracker</string>
+    <string name="app_name">Address tracker</string>
     <string name="unable_to_get_public_address">Unable to get public address</string>
     <string name="current_address">Current address</string>
     <string name="start_tracking">Start tracking</string>

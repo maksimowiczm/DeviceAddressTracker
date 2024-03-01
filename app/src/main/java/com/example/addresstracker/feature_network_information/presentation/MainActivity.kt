@@ -1,8 +1,5 @@
 package com.example.addresstracker.feature_network_information.presentation
 
-import android.Manifest
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
 import com.example.addresstracker.feature_network_information.background_service.receiver.AddressTrackerNetworkUpdateReceiver
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
@@ -48,6 +44,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        networkTrackerViewModel.settingsIntent.observe(this) {
+            if (it != null) {
+                startActivity(it)
+            }
+        }
+
         networkUpdateReceiver =
             AddressTrackerNetworkUpdateReceiver(networkInformationFactory, useCases) {
                 currentNetworkViewModelVm.refresh()
@@ -57,13 +59,6 @@ class MainActivity : ComponentActivity() {
                     it.registerSelf(this)
                 }
 
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.POST_NOTIFICATIONS,
-            ),
-            0
-        )
 
         setContent {
             AddressTrackerTheme {

@@ -2,8 +2,11 @@ package com.example.addresstracker.feature_network_information.presentation.netw
 
 import android.app.Application
 import android.content.Intent
+import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.addresstracker.feature_network_information.background_service.AddressTrackerService
+
 
 class NetworkTrackerViewModel(
     private val application: Application,
@@ -23,5 +26,13 @@ class NetworkTrackerViewModel(
             action = AddressTrackerService.ACTION_STOP
             application.startService(this)
         }
+    }
+
+    val settingsIntent = MutableLiveData<Intent?>(null)
+
+    fun allowNotifications() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, application.packageName)
+        settingsIntent.postValue(intent)
     }
 }

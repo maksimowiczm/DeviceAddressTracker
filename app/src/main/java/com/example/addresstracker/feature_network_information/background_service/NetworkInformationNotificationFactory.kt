@@ -13,8 +13,11 @@ class NetworkInformationNotificationFactory(
     private val context: Context,
 ) {
     fun create(networkInformation: INetworkInformation?): Notification {
-        val notificationContent =
-            "${context.resources.getString(R.string.tracker_notification_content)} ${networkInformation?.address}"
+        val notificationContent = if (networkInformation != null) {
+            "${context.resources.getString(R.string.tracker_notification_content)} ${networkInformation.address}"
+        } else {
+            context.resources.getString(R.string.cannot_get_address)
+        }
 
         val notificationBuilder = NotificationCompat
             .Builder(context, AddressTrackerService.NOTIFICATION_CHANNEL)

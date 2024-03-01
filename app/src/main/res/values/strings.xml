@@ -8,4 +8,5 @@
     <string name="tracker_notification_content">Your current address:</string>
     <string name="notification_stop">STOP</string>
     <string name="allow_notification_button">Allow notifications to track in background</string>
+    <string name="cannot_get_address">Couldn\'t fetch your address</string>
 </resources>

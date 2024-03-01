@@ -1,0 +1,40 @@
+name: Generate APK
+
+env:
+  MAIN_PROJECT_MODULE: app
+  APPLICATION_NAME: Address Tracker
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Build gradle project
+        run: ./gradlew build
+
+      - name: Build apk release
+        run: ./gradlew assemble
+
+      - name: Upload APK Release
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ${{ env.APPLICATION_NAME }} - ${{ github.sha }} - APK
+          path: ${{ env.MAIN_PROJECT_MODULE }}/build/outputs/apk/release/app-release-unsigned.apk

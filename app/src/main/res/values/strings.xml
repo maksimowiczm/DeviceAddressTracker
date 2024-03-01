@@ -5,5 +5,6 @@
     <string name="start_tracking">Start tracking</string>
     <string name="stop_tracking">Stop tracking</string>
     <string name="tracker_notification_title">Your IP address is being tracked</string>
-    <string name="tracker_notification_content">Your address:</string>
+    <string name="tracker_notification_content">Your current address:</string>
+    <string name="notification_stop">STOP</string>
 </resources>

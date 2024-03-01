@@ -18,12 +18,15 @@ class NetworkInformationNotificationFactory(
 
         val notificationBuilder = NotificationCompat
             .Builder(context, AddressTrackerService.NOTIFICATION_CHANNEL)
-            .setContentTitle(context.resources.getString(R.string.tracker_notification_title))
+            .setContentTitle(context.getString(R.string.tracker_notification_title))
             .setContentText(notificationContent)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.drawable.ic_notification_icon)
             .setOngoing(true)
             .setContentIntent(createContentIntent())
-            .addAction(R.drawable.ic_launcher_background, "STOP", createStopAction())
+            .addAction(
+                R.drawable.ic_notification_icon,
+                context.getString(R.string.notification_stop), createStopAction()
+            )
 
         return notificationBuilder.build()
     }

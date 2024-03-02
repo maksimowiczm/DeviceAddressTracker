@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import com.example.addresstracker.feature_network_information.background_service.receiver.AddressTrackerNetworkUpdateReceiver
+import com.example.addresstracker.feature_network_information.domain.Settings
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformation
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
@@ -52,7 +53,7 @@ class AddressTrackerService : Service() {
     private fun startService() {
         // todo use AlarmManager instead?
         serviceScope.launch {
-            useCases.trackNetworkInformation.invoke(Duration.ofHours(3))
+            useCases.trackNetworkInformation.invoke(Duration.ofHours(Settings.UPDATE_PERIOD))
                 .distinctUntilChanged { old, new ->
                     old?.address.equals(new?.address)
                 }

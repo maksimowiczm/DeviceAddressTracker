@@ -4,17 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.addresstracker.feature_network_information.domain.model.INetworkInformationFactory
 import com.example.addresstracker.feature_network_information.domain.repository.INetworkInformationRepository
-import com.example.addresstracker.feature_network_information.domain.use_case.AddNetworkInformation
-import com.example.addresstracker.feature_network_information.domain.use_case.AddNetworkInformationIfDifferentToMostRecent
-import com.example.addresstracker.feature_network_information.domain.use_case.DeleteNetworkInformation
-import com.example.addresstracker.feature_network_information.domain.use_case.GetPreviousNetworkInformation
-import com.example.addresstracker.feature_network_information.domain.use_case.NetworkInformationUseCases
-import com.example.addresstracker.feature_network_information.domain.use_case.TrackNetworkInformation
 import com.example.addresstracker.feature_network_information.persistence.room.DateConverter
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationDatabase
 import com.example.addresstracker.feature_network_information.persistence.room.NetworkInformationRepository
 import com.example.addresstracker.feature_network_information.persistence.room.factory.NetworkInformationOnlyWifiFactory
-import com.example.addresstracker.utils.DateStringifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,10 +15,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-// todo make some kind of DI abstraction
 @Module
 @InstallIn(SingletonComponent::class)
-internal object NetworkInformationModule {
+internal object NetworkInformationRoomModule {
     @Provides
     @Singleton
     fun provideNetworkInformationDatabase(@ApplicationContext context: Context): NetworkInformationDatabase {
@@ -46,30 +38,7 @@ internal object NetworkInformationModule {
     }
 
     @Provides
-    @Singleton
     fun provideNetworkInformationFactory(@ApplicationContext context: Context): INetworkInformationFactory {
         return NetworkInformationOnlyWifiFactory(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideNetworkInformationUseCases(
-        repository: INetworkInformationRepository,
-        factory: INetworkInformationFactory,
-    ): NetworkInformationUseCases {
-        return NetworkInformationUseCases(
-            addNetworkInformation = AddNetworkInformation(repository),
-            deleteNetworkInformation = DeleteNetworkInformation(repository),
-            getPreviousNetworkInformation = GetPreviousNetworkInformation(repository),
-            trackNetworkInformation = TrackNetworkInformation(factory),
-            addNetworkInformationIfDifferentToMostRecent =
-            AddNetworkInformationIfDifferentToMostRecent(repository)
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideNetworkInformationStringifier(@ApplicationContext context: Context): DateStringifier {
-        return DateStringifier(context)
     }
 }

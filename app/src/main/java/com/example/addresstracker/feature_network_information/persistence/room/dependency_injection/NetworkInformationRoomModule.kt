@@ -32,7 +32,6 @@ internal object NetworkInformationRoomModule {
     }
 
     @Provides
-    @Singleton
     fun provideNetworkInformationRepository(database: NetworkInformationDatabase): INetworkInformationRepository {
         return NetworkInformationRepository(database.networkInformationDao)
     }

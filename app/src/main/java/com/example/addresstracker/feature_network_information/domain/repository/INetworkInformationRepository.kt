@@ -6,6 +6,6 @@ interface INetworkInformationRepository {
     suspend fun getAllAsync(): List<INetworkInformation>
     suspend fun getById(id: Int): INetworkInformation?
     suspend fun insertAsync(networkInformation: INetworkInformation)
+    suspend fun insertIfNotMostRecentAsync(networkInformation: INetworkInformation)
     suspend fun deleteAsync(networkInformation: INetworkInformation)
-    suspend fun getMostRecent(): INetworkInformation?
 }

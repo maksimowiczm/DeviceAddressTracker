@@ -51,6 +51,11 @@ class AddressTrackerService : Service() {
     private var addressTrackerNetworkUpdateReceiver: AddressTrackerNetworkUpdateReceiver? = null
 
     private fun startService() {
+        // if receiver is setup do not do this again
+        if (addressTrackerNetworkUpdateReceiver != null) {
+            return
+        }
+
         // todo use AlarmManager instead?
         serviceScope.launch {
             useCases.trackNetworkInformation.invoke(Duration.ofHours(Settings.UPDATE_PERIOD))
@@ -70,10 +75,9 @@ class AddressTrackerService : Service() {
         addressTrackerNetworkUpdateReceiver =
             AddressTrackerNetworkUpdateReceiver(networkInformationFactory, useCases) {
                 updateNotification(it)
+            }.also {
+                it.registerSelf(this)
             }
-                .also {
-                    it.registerSelf(applicationContext)
-                }
     }
 
     private val notificationFactory = NetworkInformationNotificationFactory(this)
@@ -90,7 +94,7 @@ class AddressTrackerService : Service() {
 
     private fun stopService() {
         if (addressTrackerNetworkUpdateReceiver != null) {
-            application.unregisterReceiver(addressTrackerNetworkUpdateReceiver)
+            unregisterReceiver(addressTrackerNetworkUpdateReceiver)
         }
         stopForeground(true)
         stopSelf()

@@ -16,3 +16,5 @@ local.properties
 .idea
 *.keystore
 sign.sh
+*.apk
+*.idsig

@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.sync.Mutex
 import javax.inject.Singleton
 
 @Module
@@ -32,8 +33,9 @@ internal object NetworkInformationRoomModule {
     }
 
     @Provides
+    @Singleton
     fun provideNetworkInformationRepository(database: NetworkInformationDatabase): INetworkInformationRepository {
-        return NetworkInformationRepository(database.networkInformationDao)
+        return NetworkInformationRepository(database.networkInformationDao, Mutex())
     }
 
     @Provides

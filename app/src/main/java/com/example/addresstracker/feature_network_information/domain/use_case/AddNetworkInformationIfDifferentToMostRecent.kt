@@ -5,12 +5,6 @@ import com.example.addresstracker.feature_network_information.domain.repository.
 
 class AddNetworkInformationIfDifferentToMostRecent(private val repository: INetworkInformationRepository) {
     suspend operator fun invoke(networkInformation: INetworkInformation) {
-        val mostRecent = repository.getMostRecent()
-
-        if (mostRecent != null && mostRecent.address == networkInformation.address) {
-            return
-        }
-
-        repository.insertAsync(networkInformation)
+        repository.insertIfNotMostRecentAsync(networkInformation)
     }
 }

@@ -14,9 +14,9 @@ class NetworkInformationMockRepository : INetworkInformationRepository {
         networks += networkInformation
     }
 
-    override suspend fun deleteAsync(networkInformation: INetworkInformation) = Unit
-
-    override suspend fun getMostRecent(): INetworkInformation? {
-        return networks.maxByOrNull { it.date }
+    override suspend fun insertIfNotMostRecentAsync(networkInformation: INetworkInformation) {
+        networks += networkInformation
     }
+
+    override suspend fun deleteAsync(networkInformation: INetworkInformation) = Unit
 }
